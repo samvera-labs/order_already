@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors = ["Jeremy Friesen", "Rob Kaufman"]
   spec.email = ["jeremy.n.friesen@gmail.com", "rob@notch8.com"]
 
-  spec.summary = "A tiny gem to provide naive sorting for Fedora Commons objects."
-  spec.description = "A tiny gem to provide naive sorting for Fedora Commons objects."
+  spec.summary = "A tiny gem to provide naive sorting for Fedora Commons properties."
+  spec.description = "A tiny gem to provide naive sorting for Fedora Commons properties."
   spec.homepage = "https://github.com/scientist-softserv/order_already"
   spec.required_ruby_version = ">= 2.6.0"
 
