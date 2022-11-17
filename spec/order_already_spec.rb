@@ -31,13 +31,21 @@ RSpec.describe OrderAlready do
       end
     end
 
+    it "gracefully handles persisted attributes that weren't sorted but will be going forward" do
+      # Things should work if we introduce the `prepend OrderAlready.for(:creators)` to a model that
+      # has pre-existing non-serialized data.
+      record.instance_variable_set(:@creators, creators)
+      expect(record.creators).to eq(creators)
+      expect(record.instance_variable_get(:@creators)).to eq(creators)
+    end
+
     context "underlying persistence layer" do
       it "persists ordered attributes in an \"arbitrary\" manner" do
-        expect(record.instance_variable_get("@creators")).to eq(["2~Atropos", "1~Lachesis", "0~Clotho"])
+        expect(record.instance_variable_get(:@creators)).to eq(["2~Atropos", "1~Lachesis", "0~Clotho"])
       end
 
       it "does not interfere with non-ordered attributes" do
-        expect(record.instance_variable_get("@subjects")).to eq(subjects)
+        expect(record.instance_variable_get(:@subjects)).to eq(subjects)
       end
     end
 
