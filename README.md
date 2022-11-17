@@ -24,7 +24,7 @@ With a plain old Ruby object (PORO):
 class MyModel
   attr_accessor :author, :subject
 
-  include OrderAlready.for(:author, :subject)
+  prepend OrderAlready.for(:author, :subject)
 end
 ```
 
@@ -43,7 +43,7 @@ class GenericWork < ActiveFedora::Base
   # schema (by adding accepts_nested_attributes)
   include ::Hyrax::BasicMetadata
 
-  include OrderAlready.for(:creator, :contributor)
+  prepend OrderAlready.for(:creator, :contributor)
 end
 ```
 
