@@ -58,5 +58,40 @@ RSpec.describe OrderAlready do
         expect(record.subjects).to eq(subjects)
       end
     end
+
+    context 'with custom serializer' do
+      let(:base_model) do
+        Class.new do
+          attr_reader :creators, :subjects
+
+          def creators=(values)
+            # We're going to "persist" these in an "arbitrarily different" way than what the user
+            # provided.
+            @creators = Array(values).reverse
+          end
+
+          attr_writer :subjects
+
+          serializer = Module.new do
+            def self.serialize(array)
+              OrderAlready::StringSerializer.serialize(array.sort_by(&:to_s))
+            end
+
+            def self.deserialize(array)
+              OrderAlready::StringSerializer.deserialize(array)
+            end
+          end
+          prepend OrderAlready.for(:creators, serializer: serializer)
+        end
+      end
+
+      it "reifies in sorted order" do
+        expect(record.creators).to eq(creators.sort_by(&:to_s))
+      end
+
+      it "persists ordered attributes in an \"arbitrary\" manner" do
+        expect(record.instance_variable_get(:@creators)).to eq(["2~Lachesis", "1~Clotho", "0~Atropos"])
+      end
+    end
   end
 end

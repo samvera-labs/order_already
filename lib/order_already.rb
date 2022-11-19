@@ -16,6 +16,9 @@ module OrderAlready
   # @api public
   #
   # @param attributes [Array<Symbol>] the name of the attributes/properties you want to order.
+  # @param serializer [#serialize, #deserialize] the service class responsible for serializing the
+  #        data.  Want to auto-alphabetize?  Inject a new serializer.
+  #
   # @return [Module] a module that wraps the attr_accessor methods for the given :attributes.
   #
   # @note In testing, you need to use `prepend` instead of `include`; but that may be a function of
@@ -31,16 +34,16 @@ module OrderAlready
   #     end
   #     prepend OrderAlready.for(:creators)
   #   end
-  def self.for(*attributes)
+  def self.for(*attributes, serializer: StringSerializer)
     # By creating a module, we have access to `super`.
     Module.new do
       attributes.each do |attribute|
         define_method(attribute) do
-          StringSerializer.deserialize(super())
+          serializer.deserialize(super())
         end
 
         define_method("#{attribute}=") do |values|
-          super(StringSerializer.serialize(values))
+          super(serializer.serialize(values))
         end
       end
     end
