@@ -47,6 +47,8 @@ class GenericWork < ActiveFedora::Base
 end
 ```
 
+As of v0.2.0, the `OrderAlready.for` method takes a `:serializer` keyword.  By default this is the preserve the order of the input serializers.
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.

@@ -17,9 +17,10 @@ module OrderAlready
   #
   # @param attributes [Array<Symbol>] the name of the attributes/properties you want to order.
   # @param serializer [#serialize, #deserialize] the service class responsible for serializing the
-  #        data.  Want to auto-alphabetize?  Inject a new serializer.
+  #        data.  Want to auto-alphabetize?  Use a different serializer than the default.
   #
-  # @return [Module] a module that wraps the attr_accessor methods for the given :attributes.
+  # @return [Module] a module that wraps the attr_accessor methods for the given :attributes.  In
+  #         using a module, we have access to `super`; which is super convenient!
   #
   # @note In testing, you need to use `prepend` instead of `include`; but that may be a function of
   #       my specs.
@@ -34,7 +35,13 @@ module OrderAlready
   #     end
   #     prepend OrderAlready.for(:creators)
   #   end
-  def self.for(*attributes, serializer: StringSerializer)
+  #
+  #   class OtherRecord
+  #     attr_accessor :subjects
+  #     # Assumes there's an Alphabetizer constant that responds to .serialize and .deserialize
+  #     prepend OrderAlready.for(:subjects, serializer: Alphabetizer)
+  #   end
+  def self.for(*attributes, serializer: InputOrderSerializer)
     # By creating a module, we have access to `super`.
     Module.new do
       attributes.each do |attribute|
@@ -49,10 +56,14 @@ module OrderAlready
     end
   end
 
-  module StringSerializer
-    # defaults
+  # This serializer preserves the input order regardless of underlying persistence order.
+  #
+  # The two public methods are {.deserialize} and {.serialize}.
+  module InputOrderSerializer
     TOKEN_DELIMITER = '~'
 
+    # @api public
+    #
     # Convert a serialized array to a normal array of values.
     # @param arr [Array]
     # @return [Array]
@@ -64,6 +75,8 @@ module OrderAlready
       end
     end
 
+    # @api public
+    #
     # Serialize a normal array of values to an array of ordered values
     #
     # @param arr [Array]
@@ -93,7 +106,8 @@ module OrderAlready
 
     # Sort an array of serialized values using the index token to determine the order
     def self.sort(arr)
-      # Hack to force a stable sort; see https://stackoverflow.com/questions/15442298/is-sort-in-ruby-stable
+      # Hack to force a stable sort; see
+      # https://stackoverflow.com/questions/15442298/is-sort-in-ruby-stable
       n = 0
       arr.sort_by { |val| [get_index(val), n += 1] }
     end

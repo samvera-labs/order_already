@@ -74,11 +74,11 @@ RSpec.describe OrderAlready do
 
           serializer = Module.new do
             def self.serialize(array)
-              OrderAlready::StringSerializer.serialize(array.sort_by(&:to_s))
+              OrderAlready::InputOrderSerializer.serialize(array.sort_by(&:to_s))
             end
 
             def self.deserialize(array)
-              OrderAlready::StringSerializer.deserialize(array)
+              OrderAlready::InputOrderSerializer.deserialize(array)
             end
           end
           prepend OrderAlready.for(:creators, serializer: serializer)
