@@ -1,10 +1,7 @@
 # frozen_string_literal: true
 
 require_relative "order_already/version"
-# require "set"
-# require "loofah"
 require "rails-html-sanitizer"
-# require "rails/html/scrubbers"
 
 # In the spirit of Browse Everything and Questioning Authority, the Order Already module provides a
 # simple interface for ordering properties that have an indeterminate persistence order (looking at
