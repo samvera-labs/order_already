@@ -39,6 +39,22 @@ RSpec.describe OrderAlready do
       expect(record.instance_variable_get(:@creators)).to eq(creators)
     end
 
+    context "with what looks like encoding" do
+      let(:creators) { ["2~Clotho", "1~Lachesis", "0~Atropos"] }
+
+      it "wraps that encoding", aggregate_failures: true do
+        expect(record.creators).to eq(creators)
+        expect(record.instance_variable_get(:@creators)).to eq(["2~0~Atropos", "1~1~Lachesis", "0~2~Clotho"])
+      end
+    end
+
+    context "with already encoded values" do
+      it "deserializes per the encoding" do
+        record.instance_variable_set(:@creators, ["2~Atropos", "1~Lachesis", "0~Clotho"])
+        expect(record.creators).to eq(["Clotho", "Lachesis", "Atropos"])
+      end
+    end
+
     context "underlying persistence layer" do
       it "persists ordered attributes in an \"arbitrary\" manner" do
         expect(record.instance_variable_get(:@creators)).to eq(["2~Atropos", "1~Lachesis", "0~Clotho"])
