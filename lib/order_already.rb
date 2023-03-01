@@ -20,7 +20,8 @@ module OrderAlready
   #        data.  Want to auto-alphabetize?  Use a different serializer than the default.
   #
   # @return [Module] a module that wraps the attr_accessor methods for the given :attributes.  In
-  #         using a module, we have access to `super`; which is super convenient!
+  #         using a module, we have access to `super`; which is super convenient!  The module will
+  #         also add a `#attribute_is_ordered_already?` method.
   #
   # @note In testing, you need to use `prepend` instead of `include`; but that may be a function of
   #       my specs.
@@ -42,9 +43,13 @@ module OrderAlready
   #     prepend OrderAlready.for(:subjects, serializer: Alphabetizer)
   #   end
   def self.for(*attributes, serializer: InputOrderSerializer)
+    # Capturing the named attributes to create a local binding; this helps ensure we have that
+    # available in the later :attribute_is_ordered_already? method definition.
+    ordered_attributes = attributes.map(&:to_sym)
+
     # By creating a module, we have access to `super`.
     Module.new do
-      attributes.each do |attribute|
+      ordered_attributes.each do |attribute|
         define_method(attribute) do
           serializer.deserialize(super())
         end
@@ -52,6 +57,10 @@ module OrderAlready
         define_method("#{attribute}=") do |values|
           super(serializer.serialize(values))
         end
+      end
+
+      define_method(:attribute_is_ordered_already?) do |attribute|
+        ordered_attributes.include?(attribute.to_sym)
       end
     end
   end

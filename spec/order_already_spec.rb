@@ -31,6 +31,11 @@ RSpec.describe OrderAlready do
       end
     end
 
+    it "registered attributes that are ordered" do
+      expect(record.attribute_is_ordered_already?(:creators)).to be_truthy
+      expect(record.attribute_is_ordered_already?(:subjects)).to be_falsey
+    end
+
     it "gracefully handles persisted attributes that weren't sorted but will be going forward" do
       # Things should work if we introduce the `prepend OrderAlready.for(:creators)` to a model that
       # has pre-existing non-serialized data.
