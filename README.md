@@ -47,6 +47,19 @@ class GenericWork < ActiveFedora::Base
 end
 ```
 
+Included, as of v0.3.1, is the `order_already/spec_helper`.  This provides the custom matcher: `have_already_ordered_attributes`.
+
+```ruby
+require 'spec_helper'
+require 'order_already/spec_helper'
+
+RSpec.describe GenericWork do
+  subject { described_class.new }
+
+  it { is_expected.to have_already_ordered_attributes(:creator, :contributor) }
+end
+```
+
 As of v0.2.0, the `OrderAlready.for` method takes a `:serializer` keyword.  By default this is the preserve the order of the input serializers.
 
 ## Development

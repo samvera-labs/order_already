@@ -62,6 +62,10 @@ module OrderAlready
       define_method(:attribute_is_ordered_already?) do |attribute|
         ordered_attributes.include?(attribute.to_sym)
       end
+
+      define_method(:already_ordered_attributes) do
+        ordered_attributes
+      end
     end
   end
 

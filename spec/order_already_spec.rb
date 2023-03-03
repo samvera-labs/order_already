@@ -2,6 +2,7 @@
 
 require 'spec_helper'
 require 'order_already'
+require 'order_already/spec_helper'
 
 RSpec.describe OrderAlready do
   let(:base_model) do
@@ -35,6 +36,8 @@ RSpec.describe OrderAlready do
       expect(record.attribute_is_ordered_already?(:creators)).to be_truthy
       expect(record.attribute_is_ordered_already?(:subjects)).to be_falsey
     end
+
+    it { is_expected.to have_already_ordered_attributes(:creators) }
 
     it "gracefully handles persisted attributes that weren't sorted but will be going forward" do
       # Things should work if we introduce the `prepend OrderAlready.for(:creators)` to a model that
