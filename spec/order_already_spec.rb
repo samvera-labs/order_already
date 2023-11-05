@@ -47,6 +47,31 @@ RSpec.describe OrderAlready do
       expect(record.instance_variable_get(:@creators)).to eq(creators)
     end
 
+    context "with setting the value to nil" do
+      let(:creators) { nil }
+
+      it "returns nil" do
+        expect(record.creators).to eq([])
+      end
+    end
+
+    context "with setting the value to an array with an empty string" do
+      let(:creators) { [''] }
+
+      it "returns nil" do
+        expect(record.creators).to eq([])
+      end
+    end
+
+    context "with setting the value to an array with a nil value" do
+      let(:creators) { [nil] }
+
+      it "returns nil" do
+        expect(record.creators).to eq([])
+      end
+    end
+
+
     context "with what looks like encoding" do
       let(:creators) { ["2~Clotho", "1~Lachesis", "0~Atropos"] }
 
