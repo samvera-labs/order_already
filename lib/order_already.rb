@@ -81,7 +81,9 @@ module OrderAlready
     # @param arr [Array]
     # @return [Array]
     def self.deserialize(arr)
-      return [] if arr&.empty?
+      arr = arr&.compact || []
+      arr = arr.reject(&:empty?)
+      return [] if arr.empty?
 
       sort(arr).map do |val|
         get_value(val)
@@ -95,7 +97,9 @@ module OrderAlready
     # @param arr [Array]
     # @return [Array]
     def self.serialize(arr)
-      return [] if arr&.empty?
+      arr = arr&.compact || []
+      arr = arr.reject(&:empty?)
+      return [] if arr.empty?
 
       arr = sanitize(arr)
 
@@ -108,6 +112,8 @@ module OrderAlready
     end
 
     def self.sanitize(values)
+      return if values.nil?
+
       full_sanitizer = Rails::Html::FullSanitizer.new
       sanitized_values = Array.new(values.size, '')
       empty = TOKEN_DELIMITER * 3
